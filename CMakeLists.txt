@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(fast_calib)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs

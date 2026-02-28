@@ -1,4 +1,24 @@
 # Camera intrinsics  
+  # multisense rect
+  # fx: 477.6049499511719
+  # fy: 499.5
+  # cx: 477.6049499511719
+  # cy: 252.0
+  # k1: 0.0
+  # k2: 0.0
+  # p1: 0.0
+  # p2: 0.0
+
+  # multisense raw
+  fx: 455.77496337890625
+  fy: 456.319091796875
+  cx: 497.1180114746094
+  cy: 251.58502197265625
+  k1: -0.03597196191549301
+  k2: 0.08101943135261536
+  p1: -0.00028405245393514633
+  p2: 0.0011874435003846884
+
   # mid360
   # fx: 843.501050605967
   # fy: 845.199690011973
@@ -30,22 +50,22 @@
   # p2: -0.000201478932371979
 
   # multi-scene
-  fx: 2478.48702288166
-  fy: 2478.58544825456
-  cx: 1230.99707596681
-  cy: 1025.66149498072
-  k1: -0.0493178189623200
-  k2: 0.147394487986097
-  p1: -0.00127118592043482
-  p2: -0.00200379689523022
+  # fx: 2478.48702288166
+  # fy: 2478.58544825456
+  # cx: 1230.99707596681
+  # cy: 1025.66149498072
+  # k1: -0.0493178189623200
+  # k2: 0.147394487986097
+  # p1: -0.00127118592043482
+  # p2: -0.00200379689523022
 
 # Calibration target parameters
-  marker_size: 0.20 # ArUco marker size (our test data uses 0.16m; adjust to match your marker size)
+  marker_size: 0.16 # ArUco marker size (our test data uses 0.16m; adjust to match your marker size)
   delta_width_qr_center: 0.55 # Half the distance between the centers of two markers in the horizontal direction 
   delta_height_qr_center: 0.35 # Half the distance between the centers of two markers in the vertical direction
   delta_width_circles: 0.5 # Distance between the centers of two circles in the horizontal direction
   delta_height_circles: 0.4 # Distance between the centers of two circles in the vertical direction
-  circle_radius: 0.12 # Radius of the circle 
+  circle_radius: 0.122 # Radius of the circle 
 
 # Distance filter
   # x_min: 3.0 # avia and mid360: 2.0 ouster: 1.5
@@ -70,17 +90,30 @@
   # z_min: 0.0
   # z_max: 2.0
 # multi_scene_33
-  x_min: 2.0
-  x_max: 5.0
-  y_min: -1.0
-  y_max: 4.0
-  z_min: 0.0
-  z_max: 2.0
+  # x_min: 2.0
+  # x_max: 5.0
+  # y_min: -1.0
+  # y_max: 4.0
+  # z_min: 0.0
+  # z_max: 2.0
+  
+  # 00_pose_1_20260220
+  x_min: 3.8
+  x_max: 4.4
+  y_min: -0.6
+  y_max: 1.2
+  z_min: -0.6
+  z_max: 0.5
 
 # Input
-  lidar_topic: "/livox/lidar" # /ouster/points /livox/lidar
-  bag_path: "$(find fast_calib)/calib_data/avia_multi_scene/33.bag"
-  image_path: "$(find fast_calib)/calib_data/avia_multi_scene/33.jpg"
+  lidar_topic: "/velodyne_1/velodyne_points" # "/livox/lidar" # /ouster/points /livox/lidar
+  bag_path: "/home/noetic/rosbags/20260220/00_pose_1_20260220.bag" # "$(find fast_calib)/calib_data/avia_multi_scene/33.bag"
+  image_path: "/home/noetic/workspace/00_pose_1_20260220_w_ring/rgb_image_raw/00000010.png" # "$(find fast_calib)/calib_data/avia_multi_scene/33.jpg"
+  pc_frame_start: 5
+  pc_frame_end: 39
+  pc_dir: "/home/noetic/workspace/00_pose_1_20260220_w_ring/velodyne_1_pcd"
+  is_livox: false
+  has_ring: true
 
 # Output
-  output_path: "$(find fast_calib)/output"
+  output_path: "/home/noetic/fast_calib_ws/20260220-calib/test_pose1_out" # "$(find fast_calib)/output"

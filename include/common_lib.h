@@ -65,6 +65,12 @@ struct Params {
   string bag_path;
   string lidar_topic;
   string output_path;
+  // added
+  bool has_ring;
+  bool is_livox;
+  int pc_frame_start;
+  int pc_frame_end;
+  string pc_dir;
 };
 
 // 读取参数
@@ -95,6 +101,12 @@ Params loadParameters(ros::NodeHandle &nh) {
   nh.param("y_max", params.y_max, 2.0);
   nh.param("z_min", params.z_min, -0.5);
   nh.param("z_max", params.z_max, 2.0);
+  // added
+  nh.param("has_ring", params.has_ring, false);
+  nh.param("is_livox", params.is_livox, false);
+  nh.param("pc_frame_start", params.pc_frame_start, 10);
+  nh.param("pc_frame_end", params.pc_frame_end, 20);
+  nh.param("pc_dir", params.pc_dir, string(""));
   return params;
 }
 

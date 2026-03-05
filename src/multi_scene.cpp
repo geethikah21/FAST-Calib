@@ -10,7 +10,8 @@
 #include <sys/stat.h>
 #include <cmath>
 #include "common_lib.h"
-#include "data_preprocess.hpp"
+// #include "data_preprocess.hpp"
+#include "data_preprocess_mod.hpp"
 
 struct RigidResult 
 {

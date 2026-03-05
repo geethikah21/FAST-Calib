@@ -98,22 +98,116 @@
   # z_max: 2.0
   
   # 00_pose_1_20260220
-  x_min: 3.8
-  x_max: 4.4
-  y_min: -0.6
-  y_max: 1.2
-  z_min: -0.6
-  z_max: 0.5
+  # x_min: 3.8
+  # x_max: 4.4
+  # y_min: -0.6
+  # y_max: 1.2
+  # z_min: -0.6
+  # z_max: 0.5
+
+  # 01_pose_2_20260220
+  # x_min: 3.4
+  # x_max: 4.8
+  # y_min: -1.4
+  # y_max: 0.1
+  # z_min: -0.7
+  # z_max: 0.7
+
+  # 02_pose_3_20260220
+  # x_min: 3.4
+  # x_max: 4.5
+  # y_min: 1.4
+  # y_max: 3.1
+  # z_min: -0.8
+  # z_max: 0.6
+
+  # 00_calib_bag1_20260225
+  # x_min: 1.4
+  # x_max: 2.8
+  # y_min: -1.8
+  # y_max: -0.7
+  # z_min: -1.0
+  # z_max: 0.4
+
+  # 01_calib_bag2_20260225
+  # x_min: 2.0
+  # x_max: 2.5
+  # y_min: -0.4
+  # y_max: 1.4
+  # z_min: -0.9
+  # z_max: 0.4
+
+  # 02_calib_bag1_outside_20260225
+  # x_min: 2.0
+  # x_max: 2.7
+  # y_min: -1.2
+  # y_max: 0.5
+  # z_min: -0.9
+  # z_max: 0.4
+
+  # 03_calib_bag2_outside_20260225
+  # x_min: 1.6
+  # x_max: 2.8
+  # y_min: -1.8
+  # y_max: -0.3
+  # z_min: -0.9
+  # z_max: 0.4
+
+  # 03_calib_bag2_outside_20260225 merged
+  # x_min: 1.5
+  # x_max: 2.9
+  # y_min: -1.8
+  # y_max: -0.3
+  # z_min: -1.0
+  # z_max: 0.5
+
+  # x_min: 1.2
+  # x_max: 3.2
+  # y_min: -2.1
+  # y_max: 0.0
+  # z_min: -1.3
+  # z_max: 0.8
+
+  x_min: 1.6
+  x_max: 2.6
+  y_min: -1.6
+  y_max: -0.4
+  z_min: -0.9
+  z_max: 0.4
+
+  # 04_calib_bag3_outside_20260225
+  # x_min: 1.8
+  # x_max: 2.9
+  # y_min: -0.1
+  # y_max: 1.7
+  # z_min: -0.9
+  # z_max: 0.3
+
+  # 05_calib_bag4_outside_20260225
+  # x_min: 1.6
+  # x_max: 2.8
+  # y_min: 0.3
+  # y_max: 1.9
+  # z_min: -0.9
+  # z_max: 0.4
+
+  # 06_calib_bag5_outside_20260225
+  # x_min: 1.8
+  # x_max: 2.7
+  # y_min: -2.1
+  # y_max: -0.5
+  # z_min: -0.9
+  # z_max: 0.4
 
 # Input
   lidar_topic: "/velodyne_1/velodyne_points" # "/livox/lidar" # /ouster/points /livox/lidar
   bag_path: "/home/noetic/rosbags/20260220/00_pose_1_20260220.bag" # "$(find fast_calib)/calib_data/avia_multi_scene/33.bag"
-  image_path: "/home/noetic/workspace/00_pose_1_20260220_w_ring/rgb_image_raw/00000010.png" # "$(find fast_calib)/calib_data/avia_multi_scene/33.jpg"
-  pc_frame_start: 5
-  pc_frame_end: 39
-  pc_dir: "/home/noetic/workspace/00_pose_1_20260220_w_ring/velodyne_1_pcd"
+  image_path: "/home/noetic/workspace/03_calib_bag2_outside_20260225/rgb_image_raw/00000200.png" # 130 # 10 # "$(find fast_calib)/calib_data/avia_multi_scene/33.jpg"
+  pc_frame_start: 180 # 125 # 5
+  pc_frame_end: 220 # 135 # 49
+  pc_dir: "/home/noetic/workspace/03_calib_bag2_outside_20260225/merged_pcd"
   is_livox: false
   has_ring: true
 
 # Output
-  output_path: "/home/noetic/fast_calib_ws/20260220-calib/test_pose1_out" # "$(find fast_calib)/output"
+  output_path: "/home/noetic/fast_calib_ws/20260225-calib/pose2_outside_merged_calib_output" # "$(find fast_calib)/output"

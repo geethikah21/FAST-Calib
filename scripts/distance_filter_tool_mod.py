@@ -130,7 +130,7 @@ def convert_pointcloud2_bag_to_pcd(
     all_intensities = []
 
     print(f"[Bag] 开始从 topic '{topic_name}' 读取 PointCloud2 点云...")
-    count = 0
+    # count = 0
     with AnyReader([bagpath], default_typestore=typestore) as reader:
         connections = [x for x in reader.connections if x.topic == topic_name]
         for conn, ts, rawdata in reader.messages(connections=connections):
@@ -142,9 +142,9 @@ def convert_pointcloud2_bag_to_pcd(
                     for point in pc2.read_points(msg, field_names=field_names, skip_nans=True):
                         all_points.append([point[0], point[1], point[2]])
                         all_intensities.append(point[3])  # 强度是第四个字段
-                    count += 1
-                    if count == 5:
-                        break
+                    # count += 1
+                    # if count == 5:
+                    #     break
                 except Exception as e:
                     print(f"[ERROR] 读取错误: {str(e)}", file=sys.stderr)
                     continue
@@ -363,70 +363,60 @@ def viz_pcd(pcd_path):
 # ===================== main =====================
 
 if __name__ == "__main__":
-    # # 1) 解析命令行参数：bag 路径 & 输出目录
-    # if len(sys.argv) > 1:
-    #     bag_file = sys.argv[1]
-    # else:
-    #     # 默认使用当前目录下的某个 bag，可以按需修改
-    #     bag_file = os.path.join(os.getcwd(), "all_2025-11-17-18-22-27.bag")
-    #     print(f"未指定 bag 文件，默认使用: {bag_file}")
-
-    # if len(sys.argv) > 2:
-    #     output_dir = sys.argv[2]
-    # else:
-    #     output_dir = os.getcwd()
-    #     print(f"未指定输出目录，使用当前目录: {output_dir}")
-
-    # # if not os.path.isfile(bag_file):
-    # #     print(f"[ERROR] bag 文件 '{bag_file}' 不存在", file=sys.stderr)
-    # #     sys.exit(1)
-
-    # if not os.path.isdir(output_dir):
-    #     print(f"[ERROR] 输出目录 '{output_dir}' 不存在", file=sys.stderr)
-    #     sys.exit(1)
-
-    # # 不需要 rospy.init_node，完全离线工具
-
-    # # 3) 自动检测 bag 中点云类型
-    # msg_type = detect_lidar_msg_type(bag_file)
-    # if msg_type is None:
-    #     print("[ERROR] 未检测到支持的雷达消息类型，退出。", file=sys.stderr)
-    #     sys.exit(1)
-
-    # # 4) 根据类型做对应的 PCD 转换
-    # if msg_type == "PointCloud2":
-    #     pcd_path = convert_pointcloud2_bag_to_pcd(
-    #         bag_file=bag_file,
-    #         output_dir=output_dir,
-    #         topic_name="/velodyne_1/velodyne_points",  # 如有不同，可改成 topic 名称
-    #         pcd_name="sensor_PointCloud2_inten_ascii.pcd"
-    #     )
-    # else:  # "CustomMsg"
-    #     pcd_path = convert_livox_custom_bag_to_pcd(
-    #         bag_file=bag_file,
-    #         output_dir=output_dir,
-    #         topic_name="/livox/lidar",  # 如有不同，可改成 topic 名称
-    #         pcd_name="livox_CustomMsg_inten_ascii.pcd"
-    #     )
-
-    # if pcd_path is None:
-    #     print("[ERROR] PCD 生成失败，退出。", file=sys.stderr)
-    #     sys.exit(1)
-
+    # parse args
     parser = argparse.ArgumentParser()
-    parser.add_argument('--kitti_dir', type=str, required=True, help='path to kitti dataset dir')
+    parser.add_argument('--mode', type=str, required=True, help='pcd (for reading from pcd) or bag (reading from bag)', default='bag')
     parser.add_argument('--out_dir', type=str, required=True, help='path to output dir')
+    parser.add_argument('--data_dir', type=str, required=True, 
+                            help='path to data dir. for bag mode, path to the ros bag if ROS 1 \
+                            and path to directory containing bag/metadata if ROS 2. \
+                            for pcd mode, path to directory containing the directory containing pcd files')
     args = parser.parse_args()
 
+    mode = args.mode
     output_dir = args.out_dir
-    kitti_dir = args.kitti_dir
-    in_pcd_dir = os.path.join(kitti_dir, 'merged_pcd')
-    start_frame = 180
-    end_frame = 220
+    data_dir = args.data_dir
 
-    pcd_path = get_merged_pcd(in_pcd_dir, start_frame, end_frame, output_dir)
+    if mode == "bag":
+        # Mode of reading from bag
+        if not os.path.isdir(output_dir):
+            print(f"[ERROR] 输出目录 '{output_dir}' 不存在", file=sys.stderr)
+            sys.exit(1)
 
-    # viz_pcd(pcd_path)
+        msg_type = detect_lidar_msg_type(data_dir)
+        if msg_type is None:
+            print("[ERROR] 未检测到支持的雷达消息类型，退出。", file=sys.stderr)
+            sys.exit(1)
+
+        if msg_type == "PointCloud2":
+            pcd_path = convert_pointcloud2_bag_to_pcd(
+                bag_file=data_dir,
+                output_dir=output_dir,
+                topic_name="/livox/lidar", # change topic name if different
+                pcd_name="sensor_PointCloud2_inten_ascii.pcd"
+            )
+        else:  # "CustomMsg"
+            pcd_path = convert_livox_custom_bag_to_pcd(
+                bag_file=data_dir,
+                output_dir=output_dir,
+                topic_name="/livox/lidar", # change topic name if different
+                pcd_name="livox_CustomMsg_inten_ascii.pcd"
+            )
+
+        if pcd_path is None:
+            print("[ERROR] PCD generation failed", file=sys.stderr)
+            sys.exit(1)
+    elif mode == "pcd":
+        # Mode of reading from PCD files
+        in_pcd_dir = os.path.join(data_dir, 'merged_pcd')
+        start_frame = 180
+        end_frame = 220
+
+        pcd_path = get_merged_pcd(in_pcd_dir, start_frame, end_frame, output_dir)
+
+        # viz_pcd(pcd_path)
+    else:
+        print('Unknown mode')
 
     # Interative point selection
     select_and_save_points(

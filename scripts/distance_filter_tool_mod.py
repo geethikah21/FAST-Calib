@@ -325,25 +325,31 @@ def select_and_save_points(pcd_folder, target_pcd_name):
     print(f"[Save] 已保存选点与范围到: {save_file}")
     print("点云处理完成。")
 
-def read_pcd(pcd_dir, ii):
+def read_pcd(pcd_dir, ii, has_ring=False):
     pcd_fp = os.path.join(pcd_dir, "{:08d}.pcd".format(ii))
     read_pc = o3d.t.io.read_point_cloud(pcd_fp)
-    positions = np.asarray(read_pc.point['positions'].cpu().numpy())
-    rings = np.asarray(read_pc.point['ring'].cpu().numpy())
-    read_pc_np = np.concatenate([positions, rings], axis=-1)
+
+    if has_ring:
+        positions = np.asarray(read_pc.point['positions'].cpu().numpy())
+        rings = np.asarray(read_pc.point['ring'].cpu().numpy())
+        read_pc_np = np.concatenate([positions, rings], axis=-1)
+    else:
+        positions = np.asarray(read_pc.point['positions'].cpu().numpy())
+        read_pc_np = positions
+
     return read_pc_np
 
-def get_merged_pcd(in_pcd_dir, start, end, out_dir):
+def get_merged_pcd(in_pcd_dir, start, end, out_dir, has_ring=False):
     full_pc = None
     for i in range(start, end + 1):
-        pc = read_pcd(in_pcd_dir, i)
+        pc = read_pcd(in_pcd_dir, i, has_ring=has_ring)
 
         if full_pc is None:
             full_pc = pc
         else:
             full_pc = np.concatenate([full_pc, pc], axis=0)
     
-    xyz = full_pc[:, :-1]
+    xyz = full_pc[:, :-1] if has_ring else full_pc
     pcd = o3d.t.geometry.PointCloud()
     pcd.point["positions"] = o3c.Tensor(xyz, dtype=o3c.Dtype.Float32)
 
@@ -371,11 +377,13 @@ if __name__ == "__main__":
                             help='path to data dir. for bag mode, path to the ros bag if ROS 1 \
                             and path to directory containing bag/metadata if ROS 2. \
                             for pcd mode, path to directory containing the directory containing pcd files')
+    parser.add_argument('--has_ring', action='store_true', help='whether or not point cloud has ring field')
     args = parser.parse_args()
 
     mode = args.mode
     output_dir = args.out_dir
     data_dir = args.data_dir
+    has_ring = args.has_ring
 
     if mode == "bag":
         # Mode of reading from bag
@@ -408,11 +416,11 @@ if __name__ == "__main__":
             sys.exit(1)
     elif mode == "pcd":
         # Mode of reading from PCD files
-        in_pcd_dir = os.path.join(data_dir, 'merged_pcd')
-        start_frame = 180
-        end_frame = 220
+        in_pcd_dir = os.path.join(data_dir, 'velodyne_1_pcd')
+        start_frame = 20
+        end_frame = 30
 
-        pcd_path = get_merged_pcd(in_pcd_dir, start_frame, end_frame, output_dir)
+        pcd_path = get_merged_pcd(in_pcd_dir, start_frame, end_frame, output_dir, has_ring=has_ring)
 
         # viz_pcd(pcd_path)
     else:

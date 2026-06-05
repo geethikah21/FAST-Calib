@@ -28,6 +28,7 @@ which is included as part of this source code package.
 #include <opencv2/opencv.hpp>
 #include <tf/tf.h>
 #include "color.h"
+#include <vector>
 
 using namespace std;
 using namespace cv;
@@ -71,6 +72,11 @@ struct Params {
   int pc_frame_start;
   int pc_frame_end;
   string pc_dir;
+  bool manual_lidar_detect;
+  std::vector<double> center1;
+  std::vector<double> center2;
+  std::vector<double> center3;
+  std::vector<double> center4;
 };
 
 // 读取参数
@@ -107,6 +113,11 @@ Params loadParameters(ros::NodeHandle &nh) {
   nh.param("pc_frame_start", params.pc_frame_start, 10);
   nh.param("pc_frame_end", params.pc_frame_end, 20);
   nh.param("pc_dir", params.pc_dir, string(""));
+  nh.param("manual_lidar_detect", params.manual_lidar_detect, false);
+  nh.param("center1", params.center1, std::vector<double>{0.0, 0.0, 0.0});
+  nh.param("center2", params.center2, std::vector<double>{0.0, 0.0, 0.0});
+  nh.param("center3", params.center3, std::vector<double>{0.0, 0.0, 0.0});
+  nh.param("center4", params.center4, std::vector<double>{0.0, 0.0, 0.0});
   return params;
 }
 
@@ -300,6 +311,7 @@ void saveCalibrationResults(const Params& params, const Eigen::Matrix4f& transfo
     outFile << "cam_d1: " << params.k2 << "\n";
     outFile << "cam_d2: " << params.p1 << "\n";
     outFile << "cam_d3: " << params.p2 << "\n";
+    outFile << "manual lidar centers " << params.manual_lidar_detect << "\n";
 
     outFile << "\nRcl: [" << std::fixed << std::setprecision(6);
     outFile << std::setw(10) << transformation(0, 0) << ", " << std::setw(10) << transformation(0, 1) << ", " << std::setw(10) << transformation(0, 2) << ",\n";

@@ -160,9 +160,70 @@ class QRDetect
     #endif
 
       // Detect markers
+      // Uncomment below line if you want to add manually labeled detections (comment out for auto detection)
+      // std::vector<int> ids{1, 2, 4, 3};
       std::vector<int> ids;
       std::vector<std::vector<cv::Point2f>> corners;
       cv::aruco::detectMarkers(image, dictionary_, corners, ids, parameters);
+
+      // Example of manually labeled corners (comment out for auto detection)
+      // Order of corners: top-left, top-right, bottom-right, bottom-left
+      // Order of corners
+      // 20260312 indoor 1 pose 3
+      // corners = {
+      //   {
+      //     cv::Point2f(455, 115),
+      //     cv::Point2f(472, 113),
+      //     cv::Point2f(473, 133),
+      //     cv::Point2f(456, 133),
+      //   },
+      //   {
+      //     cv::Point2f(571, 117),
+      //     cv::Point2f(585, 115),
+      //     cv::Point2f(585, 134),
+      //     cv::Point2f(571, 133),
+      //   },
+      //   {
+      //     cv::Point2f(575, 198),
+      //     cv::Point2f(588, 196),
+      //     cv::Point2f(588, 213),
+      //     cv::Point2f(575, 214),
+      //   },
+      //   {
+      //     cv::Point2f(460, 206),
+      //     cv::Point2f(477, 204),
+      //     cv::Point2f(479, 224),
+      //     cv::Point2f(463, 226),
+      //   }
+      // };
+
+      // 20260312 indoor 2 pose 4
+      // corners = {
+      //   {
+      //     cv::Point2f(413, 113),
+      //     cv::Point2f(431, 110),
+      //     cv::Point2f(431, 134),
+      //     cv::Point2f(411, 133),
+      //   },
+      //   {
+      //     cv::Point2f(571, 107),
+      //     cv::Point2f(595, 105),
+      //     cv::Point2f(593, 130),
+      //     cv::Point2f(569, 130),
+      //   },
+      //   {
+      //     cv::Point2f(566, 221),
+      //     cv::Point2f(588, 220),
+      //     cv::Point2f(587, 243),
+      //     cv::Point2f(565, 243),
+      //   },
+      //   {
+      //     cv::Point2f(413, 214),
+      //     cv::Point2f(431, 214),
+      //     cv::Point2f(430, 235),
+      //     cv::Point2f(412, 234),
+      //   }
+      // };
 
       // Draw detections if at least one marker detected
       if (ids.size() > 0) cv::aruco::drawDetectedMarkers(imageCopy_, corners, ids);

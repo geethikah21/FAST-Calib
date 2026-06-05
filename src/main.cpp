@@ -41,21 +41,41 @@ int main(int argc, char **argv)
     PointCloud<PointXYZ>::Ptr lidar_center_cloud(new PointCloud<PointXYZ>);
     lidar_center_cloud->reserve(4);
     
-    switch (dataPreprocessPtr->lidar_type_)
-    {
-        case LiDARType::Solid:
-            lidarDetectPtr->detect_solid_lidar(cloud_input, lidar_center_cloud);
-            break;
+    if(!params.manual_lidar_detect) {
+      switch (dataPreprocessPtr->lidar_type_)
+      {
+          case LiDARType::Solid:
+              lidarDetectPtr->detect_solid_lidar(cloud_input, lidar_center_cloud);
+              break;
 
-        case LiDARType::Mech:
-            lidarDetectPtr->detect_mech_lidar(cloud_input, lidar_center_cloud);
-            break;
+          case LiDARType::Mech:
+              lidarDetectPtr->detect_mech_lidar(cloud_input, lidar_center_cloud);
+              break;
 
-        default:
-            std::cerr << BOLDYELLOW 
-                    << "[Main] Unknown LiDAR type." 
-                    << RESET << std::endl;
-            break;
+          default:
+              std::cerr << BOLDYELLOW 
+                      << "[Main] Unknown LiDAR type." 
+                      << RESET << std::endl;
+              break;
+      }
+    }
+    else {
+      // manually add centers to cloud
+      std::vector<std::vector<double>> centers = {
+        params.center1,
+        params.center2,
+        params.center3,
+        params.center4
+      };
+
+      for(std::vector<double> center : centers) {
+        pcl::PointXYZ pt;
+        pt.x = center[0];
+        pt.y = center[1];
+        pt.z = center[2];
+
+        lidar_center_cloud->points.push_back(pt);
+      }
     }
 
     // 对 QR 和 LiDAR 检测到的圆心进行排序

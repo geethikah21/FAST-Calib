@@ -133,10 +133,10 @@ int main(int argc, char** argv)
         if (!line.empty()) lines.push_back(line);
     }
     fin.close();
-    if (lines.size() < 9) {
-        ROS_ERROR("File has fewer than 9 lines, cannot get 3 blocks.");
-        return 1;
-    }
+    // if (lines.size() < 9) {
+    //     ROS_ERROR("File has fewer than 9 lines, cannot get 3 blocks.");
+    //     return 1;
+    // }
 
     // 解析所有 block（按三行一组：time + lidar_centers + qr_centers）
     std::vector<Block> blocks;
@@ -159,15 +159,15 @@ int main(int argc, char** argv)
             }
         }
     }
-    if (blocks.size() < 3) 
-    {
-        ROS_ERROR("Parsed blocks < 3 (got %zu).", blocks.size());
-        return 1;
-    }
+    // if (blocks.size() < 3) 
+    // {
+    //     ROS_ERROR("Parsed blocks < 3 (got %zu).", blocks.size());
+    //     return 1;
+    // }
 
     // 取最后3个 block
     std::vector<Eigen::Vector3d> L, C;
-    for (size_t k = blocks.size() - 3; k < blocks.size(); ++k) 
+    for (size_t k = 0; k < blocks.size(); ++k) 
     {
         const auto& b = blocks[k];
         // 依次拼入，保持顺序一致
@@ -177,10 +177,10 @@ int main(int argc, char** argv)
             C.push_back(b.qr_pts[i]);
         }
     }
-    if (L.size() != 12 || C.size() != 12) {
-        ROS_ERROR("Merged pairs not equal to 12 (L=%zu, C=%zu).", L.size(), C.size());
-        return 1;
-    }
+    // if (L.size() != 12 || C.size() != 12) {
+    //     ROS_ERROR("Merged pairs not equal to 12 (L=%zu, C=%zu).", L.size(), C.size());
+    //     return 1;
+    // }
 
     std::cout << "LiDAR centers:" << std::endl;
     for (size_t i = 0; i < L.size(); ++i) {

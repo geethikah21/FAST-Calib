@@ -4,7 +4,11 @@
 
 The input format for LiDAR is modified to accept a set of PCD files. Each PCD file should be named in a 8 character numerical format (i.e., padded with zeros as necessary) over a set of indices ranging from `pc_frame_start` and `pc_frame_end` (both inclusive).
 
-The original FAST-Calib package checks the fields of the ROS message to determine the LiDAR type. Since the LiDAR input type has been modified, the configuration parameters `has_ring` and `is_livox` have been added. `has_ring` is used to denote that the PCD files have a ring field (of type uint16), while `is_livox` is used to determine if the LiDAR data came from the `livox_ros_driver::CustomMsg` type (in this case, the line field from the original message is used to populate the ring field in the PCD files).
+The original FAST-Calib package checks the fields of the ROS message to determine the LiDAR type. Since the LiDAR input type has been modified, the configuration parameters `has_ring` and `is_livox` have been added. 
+
+- **has_ring**: the PCD files have a ring field (of type uint16)
+- **is_livox**: the LiDAR data came from the `livox_ros_driver::CustomMsg` type. 
+  - The `line` field of these messages can be used as the ring field in this case, hence `has_ring` should also be true if `is_livox` is true.
 
 ### Example configuration for qr_params.yaml
 
@@ -20,7 +24,8 @@ In this example, the directory pointed to by `pc_dir` should contain a set of `.
 
 ## distance_filter_tool
 
-The Python script in `scripts/distance_filter_tool_mod.py` adds a `pcd` mode (set using the flag `--mode pcd`) for determining the filter parameters for the `pcl::PassThrough` filters in `lidar_detect.hpp`. The `start_frame` and `end_frame` variables in the script should be modified to the values from `pc_frame_start` and `pc_frame_end` in `qr_params.yaml` for the particular scene.
+- The Python script in `scripts/distance_filter_tool_mod.py` adds a `pcd` mode (set using the flag `--mode pcd`) for determining the filter parameters for the `pcl::PassThrough` filters in `lidar_detect.hpp`. 
+- The `start_frame` and `end_frame` variables in the script should be modified to the values from `pc_frame_start` and `pc_frame_end` in `qr_params.yaml`.
 
 ## Manual QR/LiDAR Detections
 
@@ -28,11 +33,14 @@ This entails additional functionality to allow for adding manual annotation of A
 
 ### Manual QR annotation
 
-The Python script in `scripts/detect_and_label_markers.py` can be used to manually select the corners of the Aruco markers in an input image. The script will print a formatted version of the corner locations, which can be directly added to the `qr_detect.hpp` file. See the relevant comments (starting with "Example of manually labeled corners") for additional examples/information.
+- The Python script in `scripts/detect_and_label_markers.py` can be used to manually select the corners of the Aruco markers in an input image. 
+- The script will print a formatted version of the corner locations, which can be directly added to the `qr_detect.hpp` file. 
+- See the relevant comments (starting with "Example of manually labeled corners") for additional examples/information.
 
 ### Manual LiDAR annotation
 
-The Python script in `scripts/label_lidar_centers.py` can be used to manually annotate the circles in a LiDAR point cloud and compute the circle centers based on this. The script will print out the 3D LiDAR center locations, which can be added to the `qr_params.yaml` file.
+- The Python script in `scripts/label_lidar_centers.py` can be used to manually annotate the circles in a LiDAR point cloud and compute the circle centers based on this. 
+- The script will print out the 3D LiDAR center locations, which can be added to the `qr_params.yaml` file.
 
 #### Example configuration for qr_params.yaml for manual LiDAR annotation
 

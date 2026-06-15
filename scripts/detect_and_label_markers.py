@@ -1,20 +1,9 @@
 import cv2
 import numpy as np
+import argparse
 
-def detect_aruco_markers():
+def detect_aruco_markers(fname):
     # Read image
-    # fname = '00000890.png'
-    # fname = '00000619.png'
-    # fname = '00000994.png'
-    # fname = '00000872.png'
-    # fname = '00000979.png'
-    # fname = '00000982.png'
-    # fname = '00000982_cropped.png'
-    # fname = '00000010_20260220_p1.png'
-    # fname = '00000340_20260220_p2.png'
-    # fname = '00000120_20260220_p3.png'
-    # fname = '00000200_20260312_indoor1_p3.png'
-    fname = '00000200_20260312_indoor2_p4.png'
     img = cv2.imread(fname)
 
     # print(hasattr(cv2, "aruco"))  # should be True
@@ -35,7 +24,7 @@ def detect_aruco_markers():
 
     return corners, ids
 
-def select_aruco_corners():
+def select_aruco_corners(fname):
     # Should select corners for markers in cw order starting with top left
     #   tl, tr, br, bl
     # Order that the markers are in doesn't matter as long as the ids correspond
@@ -59,19 +48,7 @@ def select_aruco_corners():
 
     # --- Main execution ---
 
-    # 1. Load an image (replace 'path_to_your_image.jpg' with your image file path)
-    # fname = '00000890.png'
-    # fname = '00000619.png'
-    # fname = '00000994.png'
-    # fname = '00000872.png'
-    # fname = '00000979.png'
-    # fname = '00000982.png'
-    # fname = '00000982_cropped.png'
-    # fname = '00000010_20260220_p1.png'
-    # fname = '00000340_20260220_p2.png'
-    # fname = '00000120_20260220_p3.png'
-    # fname = '00000200_20260312_indoor1_p3.png'
-    fname = '00000200_20260312_indoor2_p4.png'
+    # 1. Load an image
     img = cv2.imread(fname)
     if img is None:
         print("Error: Could not load image. Check the file path.")
@@ -140,8 +117,14 @@ def format_corners(corners):
         print("},")
 
 if __name__ == '__main__':
-    auto_corners, auto_ids = detect_aruco_markers()
-    manual_corners, manual_ids = select_aruco_corners()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--img_path', type=str, required=True, help='path to image to detect/label markers in')
+    args = parser.parse_args()
+
+    fname = args.img_path
+
+    auto_corners, auto_ids = detect_aruco_markers(fname)
+    manual_corners, manual_ids = select_aruco_corners(fname)
 
     compute_error(auto_corners, auto_ids, manual_corners, manual_ids)
 
